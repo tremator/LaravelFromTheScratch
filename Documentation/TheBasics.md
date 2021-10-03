@@ -103,3 +103,31 @@ seguidamente en el titulo de nuestro primer post vamos a agregar un ancla para r
 ```
 evidentemente no podemos accesar a la vista, ya que esta no existe, por lo tanto nos mostrara un error.
 Para esto vamos a ir al folder de vistas y vamos a crear un nuevo archivo llamado post.blade.php y agregaremos el html necesario para mostrar un post
+
+### Almacenar Blog Posts Como Archivos HTML
+para lograr hacer que nuestra vista post sea un poco mas dinamica, tenemos que lograr pasar variables desde nuestra ruta, hacia la vista, esto se 
+logra utilizando el segundo parametro de view(), de la siguiente forma:
+
+```php
+Route::get('/post', function () {
+    return view('post',[
+        'post' => '<h1> Hello World </h1>'
+    ]);;
+});
+```
+una vez tengamos esto, podemos crear unos archivos html, que contengan los datos de cada uno de los posts, para lugo cargar esos archivos segun 
+nos indiquen las peticiones, de la seiguiente manera:
+```php
+Route::get('/posts/{post}', function ($slug) {
+    $path = __DIR__ . "/../resources/posts/{$slug}.html";
+    if(! file_exists($path)){
+        dd('File dosnt exists');
+
+    }
+
+    $post = file_get_contents();
+    return view('post',[
+        'post' => $post
+    ]);;
+});
+```
