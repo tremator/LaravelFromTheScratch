@@ -131,3 +131,24 @@ Route::get('/posts/{post}', function ($slug) {
     ]);;
 });
 ```
+
+### Restricciones de Rutas
+
+Ahora tenemos el problema de que en la variable post de nuestro archivo de rutas, nos pueden pasar cualquier cosa, y eso no lo queremos, por lo tanto tenemos que 
+solcionar este problema, esto lo haremos de la siguiente manera:
+
+```php
+Route::get('/posts/{post}', function ($slug) {
+    $path = __DIR__ . "/../resources/posts/{$slug}.html";
+    if(! file_exists($path)){
+        dd('File dosnt exists');
+
+    }
+
+    $post = file_get_contents($path);
+    return view('post',[
+        'post' => $post
+    ]);;
+})->whereAlpha('post');
+```
+al final del metodo podemos agregar restricciones
