@@ -64,7 +64,7 @@ body{
 ```
 con esto listo podremos agregar una etiqueta link, en nuestro html para referenciar a nuestro archivo .css
 
-```php
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,3 +80,26 @@ con esto listo podremos agregar una etiqueta link, en nuestro html para referenc
 </html>
 ```
 El mismo proceso aplica para los JavaScript
+
+### Hacer una ruta y vincularla
+
+Primero vamos a modificar el html y css, para crear unos posts, luego de esto vamos a crear una nueva ruta que nos lleve a la vista de un post en especifico
+```php
+Route::get('/post', function () {
+    return view('post');;
+});
+```
+
+seguidamente en el titulo de nuestro primer post vamos a agregar un ancla para referenciar a la nueva ruta
+
+```html
+<article>
+        <h1> <a href="/post">My First Post</a> </h1>
+        <p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Provident eligendi quibusdam voluptatum quod sit, possimus doloribus exercitationem architecto voluptatibus iste quisquam? Facilis quasi eos facere laboriosam, tempora quas maxime saepe.
+
+        </p>
+</article>
+```
+evidentemente no podemos accesar a la vista, ya que esta no existe, por lo tanto nos mostrara un error.
+Para esto vamos a ir al folder de vistas y vamos a crear un nuevo archivo llamado post.blade.php y agregaremos el html necesario para mostrar un post

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('posts');
 });
 
 Route::get('/hello', function () {
@@ -27,4 +27,8 @@ Route::get('/helloWorld', function () {
 
 Route::get('/json', function () {
     return ['message' => 'Hello World'];
+});
+
+Route::get('/post', function () {
+    return view('post');;
 });
