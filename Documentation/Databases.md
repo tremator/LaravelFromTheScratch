@@ -285,3 +285,16 @@ por ultimo, vamos a modificar nuestras vistas para que tengan este nuevo link:
     @endforeach
 </x-layout>
 ```
+
+### ClockWork y el problema del N+1
+
+para solucionar este problema vamos a modificar de la siguiente forma nuestro archivo de rutas, modificando la forma en que realizamos la consulta:
+
+```php
+Route::get('/', function () {
+    return view('posts',[
+        'posts' => Post::with('category')->get()
+    ]);
+});
+
+```
