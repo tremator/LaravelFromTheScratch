@@ -311,3 +311,50 @@ tambien se agregaron atributos a la clase y un constructor, para poder manejar o
     <?php endforeach; ?>
 </body>
 ```
+
+### Clasificacion de Colecciones y Refrescamiento de Cache
+
+Primero vamos a hacer que en nuestra pagina principal, los posts se ordenen de forma descendente con respecto a la fecha de publicacion que esta guardada en 
+la metadata, para eso vamos a hacer lo siguiente:
+
+```php
+
+static public function all()
+{
+    return collect(File::files(resource_path("posts")))
+    ->map(fn($file) => YamlFrontMatter::parseFile($file))
+    ->map(fn($document) => new Post(
+        $document->title,
+        $document->date,
+        $document->body()
+    ))-> sortByDesc('date') ;
+}
+```
+Agregamos la funcion sortByDesc(), con esto podremos ordenar a placer nuestra coleccion.
+
+
+Ahora vamos a hacer que esta operacion se guarde en cache, para solucionar el problema de que no se este haciendo cada vez que ingresan a la pagina,
+para estom haremos lo siguiente:
+
+
+```php
+static public function all()
+{
+
+    return cache()->rememberForever('posts.all', function () {
+
+        return collect(File::files(resource_path("posts")))
+            ->map(fn($file) => YamlFrontMatter::parseFile($file))
+            ->map(fn($document) => new Post(
+            $document->title,
+            $document->date,
+            $document->body()
+        ))-> sortByDesc('date');
+        
+    });
+
+
+    
+}
+```
+De esta forma encerrando la operacion en la funcion de cache, logramos almacenarla durante el tiempo que queramos.
