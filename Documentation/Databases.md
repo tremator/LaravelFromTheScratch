@@ -15,7 +15,7 @@ en la base de datos, con el inconveniente de que se borra toda la data que tenia
 
 ### Eloquent y el Patron de Registro Activo
 
-### Crear un Modelo Post y una mogracion
+### Crear un Modelo Post y una migracion
 
 para esto vamos a eliminar nuestro archivo de la clase Post, y despues correremos el comando  php artisan make:migration create_post_table, con esto
 habremos creado un archivo de migracion, el cual podremos modificar para que corresponda con los datos que necesitamos que tengan los post:
@@ -118,4 +118,6 @@ Route::get('/posts/{post}', function ($id) {
 });
 
 ```
+
+### Actualizaciones Eloquent y HTML Escaping
 
