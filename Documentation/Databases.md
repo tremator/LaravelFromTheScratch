@@ -124,3 +124,9 @@ Route::get('/posts/{post}', function ($id) {
 para actualizar lso datos en la base de datos podemos utilizar el siguiente comando php artisan tinker, dentro de este ambiente
  vamos a crear una variable para guardar uno de los objetos creados $post = Post::first(); y luego vamos a modificar el body de la siguiente 
  manera $post->body= '<p>' . $post->body . '</p>', esto se vera reflejado en nuestra pagina.
+
+ ### Tres formas de mitigar las vulnerabilidades de las asignaciones masivas
+
+ La manera de proteger nuestro programa de este problema, es crear lo siguiente protected $fillable = ['title'], con eso estamos permitiendo ese campo,
+  si queremos proteger mas, simplemente los agregamos, otra forma es utilizar en lugar de fillable, usar guard, lo cual hace lo contrario, proteje ese campo
+  
