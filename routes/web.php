@@ -36,7 +36,12 @@ Route::get('/posts/{post}', function ($slug) {
 
     }
 
-    $post = file_get_contents($path);
+    $post =  cache()->remember("posts.{$slug}", now()->addHour(), function() use ($path){
+        var_dump('file gets content');
+        return file_get_contents($path);
+    });
+
+    
     return view('post',[
         'post' => $post
     ]);;

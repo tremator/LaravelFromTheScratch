@@ -152,3 +152,31 @@ Route::get('/posts/{post}', function ($slug) {
 })->whereAlpha('post');
 ```
 al final del metodo podemos agregar restricciones
+
+
+### Utilizar la Cache para Operaciones Grandes
+
+El siguiente problema que se presenta es que si tuvieramos a millones de personas accesando a la pagina de posts, este tendria que hacer el proceso de cargar un archivo 
+un millon de veces, lo cual no sirve. Para solucionar esto, vamos a utilizar la memoria cache de ka siguiente forma:
+
+```php
+Route::get('/posts/{post}', function ($slug) {
+    $path = __DIR__ . "/../resources/posts/{$slug}.html";
+    if(! file_exists($path)){
+        dd('File dosnt exists');
+
+    }
+
+    $post =  cache()->remember("posts.{$slug}", now()->addHour(), function() use ($path){
+        var_dump('file gets content');
+        return file_get_contents($path);
+    });
+
+    
+    return view('post',[
+        'post' => $post
+    ]);;
+})->whereAlpha('post');
+```
+
+de esta forma le estamos diciendo que guarde en cache el archivo durante una hora.
