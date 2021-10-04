@@ -143,3 +143,100 @@ Route::get('/posts/{post:slug}', function (Post $post) {
 });
 ```
 de esta forma, estamos pasando el slug correspiendiente a nuestro modelo de base de datos y pasando el resultado a nuestra vista
+
+### Primer relacion Eloquent
+
+Vamos generar una nueva migracion y un nuevo modelo para administrar categorias, para esto utilizaremos el siguiente comando php artisan make:model Category -m,
+seguidamente, vamos a modificar el archivo de migracion de categorias para que contenga los datos que necesitamos y modificaremos el de post, para agregar la relacion
+
+```php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateCategoriesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('slug');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('categories');
+    }
+}
+
+```
+
+
+```php
+<?php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreatePostTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('category_id');
+            $table->string('title');
+            $table->text('excerpt');
+            $table->text('body');
+            $table->string('slug')->unique();
+            $table->timestamps();
+            $table->timestamp('published_at')->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('post');
+    }
+}
+
+
+```
+y actualizaremosla base de datos con el comando php artisan migrate:fresh, y crearemos o insertaremos categorias en la base de datos, para luego insertar post que tengan la relacion.
+
+Muy bien, ahora para acceder a la categoria de nuestros post, vamos a agregar un metodo que nos permitira crear esta relacion:
+
+```php
+public function category(){
+      
+           return $this->belongsTo(Category::class);
+       
+   }
+```
