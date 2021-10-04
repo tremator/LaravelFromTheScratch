@@ -43,8 +43,19 @@
 
            
         }
-
         public static function find($slug)
+        {
+            $path = resource_path("/posts/{$slug}.html");
+           
+            $post =  cache()->remember("posts.{$slug}", now()->addHour(), function() use ($path){
+                var_dump('file gets content');
+                return file_get_contents($path);
+            });
+            
+            return $post;
+        }
+
+        public static function findOrFail($slug)
         {
             $path = resource_path("/posts/{$slug}.html");
             if(! file_exists($path)){
