@@ -129,4 +129,17 @@ para actualizar lso datos en la base de datos podemos utilizar el siguiente coma
 
  La manera de proteger nuestro programa de este problema, es crear lo siguiente protected $fillable = ['title'], con eso estamos permitiendo ese campo,
   si queremos proteger mas, simplemente los agregamos, otra forma es utilizar en lugar de fillable, usar guard, lo cual hace lo contrario, proteje ese campo
-  
+
+
+### Vinculo de Modelo a Rutas
+
+para lograr esto, simplemente hayq ue modificar nuestro archivo de rutas de la siguiente manera:
+```php
+Route::get('/posts/{post:slug}', function (Post $post) {
+    
+    return view('post',[
+        'post' => $post
+    ]);;
+});
+```
+de esta forma, estamos pasando el slug correspiendiente a nuestro modelo de base de datos y pasando el resultado a nuestra vista
