@@ -180,3 +180,66 @@ Route::get('/posts/{post}', function ($slug) {
 ```
 
 de esta forma le estamos diciendo que guarde en cache el archivo durante una hora.
+
+### Usar la Clase Filesystem para leer un directorio
+
+ahora vamos a dividir un poco el codigo, para lo cual vamos a crear una nueva clase en el folder Models, que se encuentra dentro del folder app, crearemos 
+un archivo .php y trasladremos todo el codigo que teniamos en nuestra ruta, a esta clase, de la siguiente forma:
+
+```php
+<?php
+    namespace App\Models;
+    class Post{
+
+        public static function find($slug)
+        {
+            $path = resource_path("/posts/{$slug}.html");
+            if(! file_exists($path)){
+               abort(404);
+            }
+
+            $post =  cache()->remember("posts.{$slug}", now()->addHour(), function() use ($path){
+                var_dump('file gets content');
+                return file_get_contents($path);
+            });
+            
+            return $post;
+        }
+
+    }
+```
+
+y nuestro metodo de enrutamiento quedara de la siguiente forma:
+
+```php
+Route::get('/posts/{post}', function ($slug) {
+    
+    return view('post',[
+        'post' => Post::find($slug)
+    ]);;
+})->whereAlpha('post');
+```
+Importando la clase que acabamos de crear, en mi caso Post, podremos utilizar el metodo que escribimos que contiene toda la logica para realizar la operacion.
+
+
+Ahora vamos a agregar un metodo en la clase Post que nos permita cargar todos los posts que son mostrados en la pagina principal, de la siguiente forma:
+```php
+static public function all()
+        {
+            $files = File::files(resource_path("posts/"));
+
+            return array_map(function($file){
+                return $file->getContents();
+            }, $files);
+        }
+```
+
+y modificaremos el metodo de la ruta base, para que pueda consumir este metodo y mostrar de una forma mas dinamica los posts:
+
+```php
+Route::get('/', function () {
+    return view('posts',[
+        'posts' => Post::all()
+    ]);
+});
+```
