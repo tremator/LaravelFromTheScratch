@@ -7,15 +7,15 @@
     <title>Document</title>
     <link rel="stylesheet" href ="/app.css">
 </head>
-<body>
+    <body>
 
-    <?php foreach($posts as $post) : ?>
-    <article>
-        <h1><a href="posts/<?=$post->title;?>"> <?= $post->title;?> </a></h1>
-        <p>
-            <?= $post->body;?>
-        </p>
-    </article>
-    <?php endforeach; ?>
-</body>
+        @foreach($posts as $post)
+        <article>
+            <h1><a href="posts/<?=$post->title;?>"> {{$post->title}} </a></h1>
+            <p>
+                {!!$post->body!!}
+            </p>
+        </article>
+        @endforeach
+    </body>
 </html>

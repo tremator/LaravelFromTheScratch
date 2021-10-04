@@ -2,3 +2,4 @@
 
 ## Indice
     - [The Basics](./Documentation/TheBasics.md)
+    - [Blade](./Documentation/Blade.md)
