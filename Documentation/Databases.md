@@ -240,3 +240,48 @@ public function category(){
        
    }
 ```
+ahora cuando consultemos por el atributo category, nos devolvera la categoria a la que esta asociado el post.
+
+### Mostrar Los Posts Asociados a Una Categoria
+
+para esto vamos a agregar la relacion en el modelo de categorias:
+
+```php
+ public function posts(){
+      
+        return $this->hasMany(Post::class);
+    
+    }
+```
+
+seguidamente vamos a agregar una ruta nueva que nos muestre los posts de una categoria, la cual va a ser seleccionada por el slug:
+
+```php
+Route::get('/categories/{category:slug}', function (Category $category) {
+    return view('posts',[
+        'posts' => $category->posts
+    ]);
+});
+```
+
+por ultimo, vamos a modificar nuestras vistas para que tengan este nuevo link:
+
+```html
+<x-layout>
+
+    @foreach($posts as $post)
+        <article>
+        <h1><a href="posts/<?=$post->slug;?>"> {{$post->title}} </a></h1>
+        
+            {!!$post->excerpt!!}
+
+            <p>
+                <a href="/categories/{{$post->category->slug}}">
+                    {{$post->category->slug}}
+                </a>
+            </p>
+        
+        </article>
+    @endforeach
+</x-layout>
+```

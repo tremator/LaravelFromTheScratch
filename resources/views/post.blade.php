@@ -6,7 +6,7 @@
         
             {!!$post->body!!}
             <p>
-                <a href="#">
+                <a href="/categories/{{$post->category->slug}}">
                     {{$post->category->slug}}
                 </a>
             </p>
