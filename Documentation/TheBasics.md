@@ -243,3 +243,71 @@ Route::get('/', function () {
     ]);
 });
 ```
+
+### Encontrar un paquete para la Metadata de los Post
+
+vamos a agregar metadata a los archivos de posts, para separar la informacion en partes que sean mas manejables en lugar de un html puro:
+
+```html
+---
+
+title: MyFirstPost
+date: 2021-10-03
+
+---
+
+<p>
+
+    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Provident eligendi quibusdam voluptatum quod sit, possimus doloribus exercitationem architecto voluptatibus iste quisquam? Facilis quasi eos facere laboriosam, tempora quas maxime saepe.
+
+</p>
+```
+
+muy bien, ahora vamos a hacer que nuestro metodo all, de la clase Post, pueda leer esta metadata, para lo cual instalaremos una libreria, el cual puede ser instalado 
+en la terminal con composer, con el siguiente comando  composer require spatie/yaml-front-matter, una ves instalado este paquete, podremos hacer nuestro metodo:
+```php
+ public $title;
+
+        public $date;
+
+        public $body;
+
+        public function __construct($title, $date, $body){
+            $this->title = $title;
+
+            $this->date = $date;
+
+            $this->body = $body;
+
+        }
+
+
+
+        static public function all()
+        {
+           return collect(File::files(resource_path("posts")))
+           ->map(fn($file) => YamlFrontMatter::parseFile($file))
+           ->map(fn($document) => new Post(
+               $document->title,
+               $document->date,
+               $document->body()
+           ));
+        }
+```
+
+tambien se agregaron atributos a la clase y un constructor, para poder manejar objetos y poder leerlos desde nuestra vista de la siguiente manera:
+
+```html
+
+<body>
+
+    <?php foreach($posts as $post) : ?>
+    <article>
+        <h1><a href="posts/<?=$post->title;?>"> <?= $post->title;?> </a></h1>
+        <p>
+            <?= $post->body;?>
+        </p>
+    </article>
+    <?php endforeach; ?>
+</body>
+```
