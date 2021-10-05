@@ -525,4 +525,82 @@ una vez agregado esto y modificado la base de datos, nos resta actualizar nuestr
     <a href="/">Go Back</a>
 </x-layout>
 ```
+### Eager Load Relantionships on an existing model
+
+ahora vamos a arreglar un poco el problema de N+1, pero de una forma diferente, vamos a ir a la clase Post y vamos a agregar el 
+atributo with:
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
+{   
+    use HasFactory;
+
+    protected $with = ['category','author'];
+
+   // protected $fillable = ['title'];
+   public function category(){
+      
+        return $this->belongsTo(Category::class);
+       
+   }
+   public function author(){
+       return $this->belongsTo(User::class,'user_id');
+   
+   }
+}
+
+
+```
+
+y con esto simplemente acabamos de simplicar nuestro archivo de rutas, simplemente vamos a hacer el siguiente cambio:
+
+```php
+Route::get('/', function () {
+    return view('posts',[
+        'posts' => Post::latest()->get()
+    ]);
+});
+
+Route::get('/hello', function () {
+    return view('welcome');
+});
+
+Route::get('/helloWorld', function () {
+    return "Hello World";
+});
+
+Route::get('/json', function () {
+    return ['message' => 'Hello World'];
+});
+
+Route::get('/posts/{post:slug}', function (Post $post) {
+    
+    return view('post',[
+        'post' => $post
+    ]);;
+});
+
+Route::get('/categories/{category:slug}', function (Category $category) {
+    return view('posts',[
+        'posts' => $category->posts
+    ]);
+
+});
+
+Route::get('/authors/{author:username}', function (User $author) {
+    return view('posts',[
+        'posts' => $author->posts
+    ]);
+
+});
+
+```
+
 
