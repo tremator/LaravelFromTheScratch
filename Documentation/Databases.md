@@ -467,3 +467,62 @@ class DatabaseSeeder extends Seeder
 
  ```
 
+ ### Ver los Post de un Autor
+
+ para esto vamos a modificar la migracion de user y el factory para agregar un username el cual nos servira para hacer la busqueda, luego vamos a modificar 
+ nuestro archivo de rutas para agregar la nueva ruta:
+
+ ```php
+Route::get('/authors/{author:username}', function (User $author) {
+    return view('posts',[
+        'posts' => $author->posts
+    ]);
+});
+
+ ```
+una vez agregado esto y modificado la base de datos, nos resta actualizar nuestras vistas para que puedan consumir esto:
+
+```html
+
+<x-layout>
+
+    @foreach($posts as $post)
+        <article>
+        <h1><a href="posts/<?=$post->slug;?>"> {{$post->title}} </a></h1>
+
+        <p>
+            By <a href="authors/{{$post->author->username}}">{{$post->author->name}}</a>
+        </p>
+        
+            {!!$post->excerpt!!}
+
+            <p>
+                <a href="/categories/{{$post->category->slug}}">
+                    {{$post->category->slug}}
+                </a>
+            </p>
+        
+        </article>
+    @endforeach
+</x-layout>
+```
+```html
+<x-layout>
+
+
+    <article>
+        <h1>{{$post->title}}</h1>
+        <p>
+            By <a href="authors/{{$post->author->username}}">{{$post->author->name}}</a>
+        </p>
+            {!!$post->body!!}
+            <p>
+                <a href="/categories/{{$post->category->slug}}">
+                    {{$post->category->slug}}
+                </a>
+            </p>
+    </article>
+    <a href="/">Go Back</a>
+</x-layout>
+```
+
