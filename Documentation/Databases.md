@@ -315,6 +315,7 @@ use App\Models\Post;
 
 
 
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -350,4 +351,119 @@ class DatabaseSeeder extends Seeder
 
  ```
  seguidamente en nuestra terminal refrescamos la base de datos y corremos el siguiente comando php artisan db:seed y esto cargara las semillas que hicimos en la base de datos.
- 
+
+ ### Arranque Rapido con Factory
+
+ para crear factorys y simplificar nuestro codigo en el archivo de seeds, primero vamos a generarlos con el siguiente comando  php artisan make:factory PostFactory.
+
+ de igual forma haremos uno para las categorias, para luego modificarlas para que creen datos a nuestro gusto:
+
+ ```php
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Post;
+use App\Models\User;
+use App\Models\Category;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class PostFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Post::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'category_id' => Category::factory(),
+            'title' => $this->faker->sentence,
+            'slug' => $this->faker->slug,
+            'excerpt' => $this->faker->sentence,
+            'body' => $this->faker->paragraph,
+        ];
+    }
+}
+ ```
+
+ ```php
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Category;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class CategoryFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Category::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->word,
+            'slug' => $this->faker->slug
+        ];
+    }
+}
+
+
+ ```
+
+ y con esto listo, podremos simplificar mucho nuestros archivo seed:
+
+ ```php
+ <?php
+
+namespace Database\Seeders;
+
+use App\Models\User;
+use App\Models\Category;
+use App\Models\Post;
+
+
+
+
+use Illuminate\Database\Seeder;
+
+class DatabaseSeeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        User::truncate();
+        Category::truncate();
+        Post::truncate();
+
+        Post::factory()->create();
+
+    }
+}
+
+
+ ```
+
