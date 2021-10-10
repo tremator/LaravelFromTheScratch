@@ -226,3 +226,32 @@ Route::get('/', [PostController::class, 'index'])->name('home');
 
 Route::get('/posts/{post:slug}', [PostController::class, 'show']);
 ```
+
+### Unir busqueda y categorias
+
+para esto, es simplemente modificar estos componentes para que no intervengan uno con el utro, de forma que cuando se quiera buscar algo por medio de 
+la categoria, si ya hay una busqueda, esta no sea eliminada. Modificaremos nuestro header:
+
+```html
+<div class="relative flex lg:inline-flex items-center bg-gray-100 rounded-xl px-3 py-2">
+            <form method="GET" action="/">
+                @if (request('category'))
+                <input type="hidden" name="category" value="{{request('category')}}" >
+                @endif
+
+                <input type="text" name="search" placeholder="Find something"
+                       class="bg-transparent placeholder-black font-semibold text-sm"
+                       value="{{request('search')}}"
+                       >
+            </form>
+        </div>
+```
+y nuestro dropdown:
+
+```html
+ <x-dropdown_item 
+    
+    :active="isset($currentCategory) && $currentCategory->is($category)"
+    
+    href="/?category={{$category->slug}}&{{http_build_query(request()->except('category'))}}">{{$category->name}}</x-dropdown_item>
+```
