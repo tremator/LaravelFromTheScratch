@@ -166,3 +166,63 @@ por lo tanto, vamos a eliminar esa parte de nuestro controller:
 
 
 ```
+### Filtro de Autor
+
+Para esto vamos a seguir el mismo procedimiento, vamos a modificar nuestra clase post en nuestro metodo filter:
+
+```php
+ public function scopeFilter($query, array $filters){
+
+        $query->when($filters['search'] ?? false, fn($query, $search) =>
+            $query->where('title', 'like', '%' . request('search') . '%')
+            ->orWhere('body', 'like', '%' . request('search') . '%'));
+
+        $query->when($filters['category'] ?? false, fn($query, $category) =>
+            $query->whereHas('category', fn($query) => $query->where('slug', $category)));
+
+        $query->when($filters['author'] ?? false, fn($query, $author) =>
+            $query->whereHas('author', fn($query) => $query->where('username', $author)));
+        
+    }
+```
+
+y agregamos un nuevo filtro para el autor, seguidamente modificamos el controller:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Category;
+use App\Models\Post;
+use Illuminate\Http\Request;
+
+class PostController extends Controller
+{
+
+    public function index(){
+
+        return view('posts',[
+            'posts' => Post::latest()->filter(request(['search','category','author']))->get() ,
+            
+        ]);
+    }
+
+    public function show(Post $post){
+        return view('post',[
+            'post' => $post
+        ]);
+    }
+    
+}
+
+```
+
+agregarmos el autor dentro de los parametros que espera y listo, solo nos queda actualizar las rutas en los componentes y actualizar loas rutas del archivo:
+
+```php
+Route::get('/', [PostController::class, 'index'])->name('home');
+
+
+Route::get('/posts/{post:slug}', [PostController::class, 'show']);
+```
