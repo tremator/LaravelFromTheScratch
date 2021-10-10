@@ -32,7 +32,7 @@
             
             :active="isset($currentCategory) && $currentCategory->is($category)"
             
-            href="/categories/{{$category->slug}}">{{$category->name}}</x-dropdown_item>
+            href="/?category={{$category->slug}}">{{$category->name}}</x-dropdown_item>
                 
 
             @endforeach
