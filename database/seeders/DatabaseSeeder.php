@@ -24,7 +24,13 @@ class DatabaseSeeder extends Seeder
         Category::truncate();
         Post::truncate();
 
-        Post::factory()->create();
+        for ($i=0; $i < 20; $i++) { 
+            Post::factory()->create();
+            # code...
+        }
+
+       
+  
 
     }
 }
