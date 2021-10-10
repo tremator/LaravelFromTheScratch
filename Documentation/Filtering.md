@@ -255,3 +255,15 @@ y nuestro dropdown:
     
     href="/?category={{$category->slug}}&{{http_build_query(request()->except('category'))}}">{{$category->name}}</x-dropdown_item>
 ```
+### Arreglar un bug en un Eloquent Query
+
+vamos a arreglar un problema que tenemos en nuestro query, ya que en estos momentos, no hay una separacion entre el filtro por nombre o palabra y los demas,
+para esto vamos a hacer un cambion en nuestra clase Post:
+
+```php
+$query->when($filters['search'] ?? false, fn($query, $search) =>
+            $query->where(fn($query)=>
+            
+            $query->where('title', 'like', '%' . request('search') . '%')
+            ->orWhere('body', 'like', '%' . request('search') . '%')));
+```
