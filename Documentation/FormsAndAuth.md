@@ -287,3 +287,88 @@ y en nuestras rutas tambien podemos hacerlo, de forma que solo respondan si no h
 Route::get('register', [RegisterController::class, 'create'])->middleware('guest');
 Route::post('register', [RegisterController::class, 'store'])->middleware('guest');
 ```
+
+### Contruir la pagina de log in
+
+Esto es basicamente lo mismo que para registrarse asi que, vamos a crear una vista para esto:
+
+```html
+
+<x-layout>
+
+    <section class="px-6 py-8">
+        <main class="max-w-lg mx-auto mt-10 bg-gray-100 border border border-gray-200 p-6 rounded-xl">
+            <h1 class="text-center font-bold text-xl">LogIn </h1>
+            <form method="POST" action="/login" class="mt-10">
+
+                @csrf
+                
+
+                <div>
+                    <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="email">Email</label>
+                    <input class="border border-gray-400 p-2 w-full" type="email" name="email" id="email" required value="{{old('email')}}">
+
+                    @error('email')
+                        <p class="text-red-500 text-xs mt-1">{{$message}}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="password">Password</label>
+                    <input class="border border-gray-400 p-2 w-full" type="password" id="password" name="password" required>
+
+                    @error('password')
+                        <p class="text-red-500 text-xs mt-1">{{$message}}</p>
+                    @enderror
+                </div>
+
+                <div class="mb-6 mt-10">
+                    <button type="submit" class="bg-blue-400 text-white rounded py-2 px-4 hover:bg-blue-500">
+                        Log In
+                    </button>
+
+                </div>
+
+            </form>
+
+        </main>
+    </section>
+
+
+</x-layout>
+
+```
+
+agregaremos los metodos necesarios en nuestro controller:
+
+```php
+
+public function create(){
+        return view('sessions.create');
+    }
+
+    public function store(){
+
+        $attributes = request()->validate([
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|min:8'
+        ]);
+
+        if (Auth::attempt($attributes)) {
+            return redirect('/')->with('success', 'Welcome Back');
+        }
+
+        return back()->withInput()->withErrors(['email' => 'Your Provided Credentials could not be verified']);
+
+    }
+
+```
+
+y por ultimo las rutas:
+
+```php
+
+Route::get('/login', [SessionController::class, 'create'])->middleware('guest');
+Route::post('login', [SessionController::class, 'store'])->middleware('guest');
+
+```
