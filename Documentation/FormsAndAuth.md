@@ -180,3 +180,42 @@ esta a la mano en laravel:
 ```
 
 ademas de el manejo de errores, se agrego un value el cual corresponde a lo ultimo que tenia ese input
+
+
+
+### Mostar Mensaje de Exito
+
+para hacer esto, vamos a agregar un mensaje en el redirect de nuestro register controller:
+
+```php
+   public function store()
+    {
+        $attributes = request()->validate([
+            'name' => 'required',
+            'username' => 'required|unique:users,username',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8'
+        ]);
+
+       
+
+        User::create($attributes); 
+
+        session()->flash('success','Your account has been created.');
+
+        return redirect('/');
+    }
+
+```
+
+y en nuestro layout vamos a agregar un poco de html para reflejar este mensaje:
+
+```html
+
+    @if (session()->has('success'))
+        <div x-data="{show: true}" x-init="setTimeout(()=> show = false, 4000)"  x-show="show" class="fixed bg-blue-500 text-white py-2 px-4 rounded-xl bottom-3 right-3 text-sm">
+            <p>{{session('success')}}</p>
+        </div>
+    @endif
+
+```

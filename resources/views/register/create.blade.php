@@ -36,7 +36,7 @@
 
                 <div>
                     <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="password">Password</label>
-                    <input class="border border-gray-400 p-2 w-full" type="password" id="password" required>
+                    <input class="border border-gray-400 p-2 w-full" type="password" id="password" name="password" required>
 
                     @error('password')
                         <p class="text-red-500 text-xs mt-1">{{$message}}</p>
