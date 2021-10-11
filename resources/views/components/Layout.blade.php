@@ -15,9 +15,24 @@
                     <img src="/images/logo.svg" alt="Laracasts Logo" width="165" height="16">
                 </a>
             </div>
+            
+            <div class="mt-8 md:mt-0 flex items-center">
+                @guest
+                    <a href="/register" class="text-xs font-bold uppercase">Register</a>
 
-            <div class="mt-8 md:mt-0">
-                <a href="/" class="text-xs font-bold uppercase">Home Page</a>
+                    <a href="/login" class="text-xs font-bold uppercase ml-6">Log In</a>
+
+
+                @else
+                    <span class="text-xs font-bold uppercase">{{auth()->user()->name}}</span>
+
+                    <form method="POST" action="/logout" class="text-xs font-semibold text-blue-500 ml-6">
+                        @csrf
+                        <button type="submit"> LogOut</button>
+                    
+                    </form>
+                @endguest
+                
 
                 <a href="#" class="bg-blue-500 ml-3 rounded-full text-xs font-semibold text-white uppercase py-3 px-5">
                     Subscribe for Updates

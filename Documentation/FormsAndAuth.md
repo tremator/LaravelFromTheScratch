@@ -219,3 +219,71 @@ y en nuestro layout vamos a agregar un poco de html para reflejar este mensaje:
     @endif
 
 ```
+### Ingresar y registrarse
+Ya podemos crear nuestro usuario, pero nuestra pagina todavia no sabe que ya hay un usuario activo, por lo tanto vamos a grgar la logica que nos permitira hacer esto, para esto 
+vamos a nuestro RegisterController y agregaremos lo siguiente:
+
+```php
+public function store()
+    {
+        $attributes = request()->validate([
+            'name' => 'required',
+            'username' => 'required|unique:users,username',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8'
+        ]);
+
+       
+
+        $user = User::create($attributes); 
+
+
+        Auth::login($user);
+        session()->flash('success','Your account has been created.');
+
+        return redirect('/');
+    }
+
+```
+
+con esoo estamos guardando o iniciando nuestro usuario y con esto podremos revisar y manejar si ya tenemos un usuario ingresado:
+
+```html
+<section class="px-6 py-8">
+        <nav class="md:flex md:justify-between md:items-center">
+            <div>
+                <a href="/">
+                    <img src="/images/logo.svg" alt="Laracasts Logo" width="165" height="16">
+                </a>
+            </div>
+            
+            <div class="mt-8 md:mt-0 flex items-center">
+                @guest
+                    <a href="/register" class="text-xs font-bold uppercase">Register</a>
+
+                    <a href="/login" class="text-xs font-bold uppercase ml-6">Log In</a>
+
+
+                @else
+                    <span class="text-xs font-bold uppercase">{{auth()->user()->name}}</span>
+
+                    <form method="POST" action="/logout" class="text-xs font-semibold text-blue-500 ml-6">
+                        @csrf
+                        <button type="submit"> LogOut</button>
+                    
+                    </form>
+                @endguest
+                
+
+                <a href="#" class="bg-blue-500 ml-3 rounded-full text-xs font-semibold text-white uppercase py-3 px-5">
+                    Subscribe for Updates
+                </a>
+            </div>
+        </nav>
+```
+y en nuestras rutas tambien podemos hacerlo, de forma que solo respondan si no hay un usuario, como lo es el caso de la ruta register:
+
+```php
+Route::get('register', [RegisterController::class, 'create'])->middleware('guest');
+Route::post('register', [RegisterController::class, 'store'])->middleware('guest');
+```
