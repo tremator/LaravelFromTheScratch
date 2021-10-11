@@ -6,3 +6,5 @@
     - [Working With Data Bases](./Documentation/Databases.md)
     - [Integrate the design](./Documentation/IntegrateTheDesign.md)
     - [Search](./Documentation/Search.md)
+    - [Pagination](./Documentation/Pagination.md)
+    - [FormsAndAuth](./Documentation/FormsAndAuth.md)

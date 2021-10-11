@@ -59,4 +59,4 @@ en los ligares que queramos la paginacion:
 
 </x-layout>
 
-```
+``` 
