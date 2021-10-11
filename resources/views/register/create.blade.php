@@ -6,18 +6,42 @@
             <form method="POST" action="/register" class="mt-10">
 
                 @csrf
+                <div>
+                    <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="name">Name</label>
+                    <input class="border border-gray-400 p-2 w-full" type="text" name="name" id="name" required value="{{old('name')}}">
 
-                <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="name">Name</label>
-                <input class="border border-gray-400 p-2 w-full" type="text" name="name" id="name" required>
+                    @error('name')
+                        <p class="text-red-500 text-xs mt-1">{{$message}}</p>
+                    @enderror
+                </div>
 
-                <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="username">UserName</label>
-                <input class="border border-gray-400 p-2 w-full" type="text" name="username" id="username" required>
 
-                <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="email">Email</label>
-                <input class="border border-gray-400 p-2 w-full" type="email" name="email" id="email" required>
+                <div>
+                    <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="username">UserName</label>
+                    <input class="border border-gray-400 p-2 w-full" type="text" name="username" id="username" required value="{{old('username')}}">
 
-                <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="password">Password</label>
-                <input class="border border-gray-400 p-2 w-full" type="password" id="password" required>
+                    @error('username')
+                        <p class="text-red-500 text-xs mt-1">{{$message}}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="email">Email</label>
+                    <input class="border border-gray-400 p-2 w-full" type="email" name="email" id="email" required value="{{old('email')}}">
+
+                    @error('email')
+                        <p class="text-red-500 text-xs mt-1">{{$message}}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="password">Password</label>
+                    <input class="border border-gray-400 p-2 w-full" type="password" id="password" required>
+
+                    @error('password')
+                        <p class="text-red-500 text-xs mt-1">{{$message}}</p>
+                    @enderror
+                </div>
 
                 <div class="mb-6 mt-10">
                     <button type="submit" class="bg-blue-400 text-white rounded py-2 px-4 hover:bg-blue-500">
