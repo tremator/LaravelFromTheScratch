@@ -89,3 +89,16 @@ y por ultimo la vista que contendra el form:
 
 </x-layout>
 ```
+
+### Hash Automático de Contraseñas con Mutadores
+
+para esto simplemente vamos a agregar un mutator en nuestra clase User, de la siguiente forma:
+
+```php
+public function setPasswordAttribute($password){
+        $this->attributes['password'] = bcrypt($password);
+    }
+
+```
+
+con esto logramos que antes de que la contraseña sea guardada se incripte.
