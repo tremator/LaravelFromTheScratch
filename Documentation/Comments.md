@@ -100,3 +100,95 @@ class CreateCommentsTable extends Migration
 
 
 ```
+
+### Hacer los comentarios dinamicos
+
+para esto vamos a trabajar en el factory para poder crear commentarios y sus relaciones:\
+
+```php
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Comment;
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class CommentFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Comment::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'post_id'=> Post::factory(),
+            'user_id' => User::factory(),
+            'body' => $this->faker->paragraph()
+        ];
+    }
+}
+
+```
+
+ademas de esto es necesario agregar dichas relaciones en el modelo:
+
+```php
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Comment extends Model
+{
+    use HasFactory;
+
+    public function post(){
+
+        return $this->belongsTo(Post::class);
+
+    }
+
+    public function author(){
+        return $this->belongsTo(User::class,'user_id');
+
+    }
+}
+ 
+
+```
+
+y de igual forma en sus clases padre hay que agregar la relcion:
+
+```php
+
+public function comments(){
+    return $this->hasMany(Comment::class);
+
+}
+
+```
+
+
+```php
+
+public function comments(){
+       return $this->hasMany(Comment::class);
+   }
+
+```
+
+y por ultimo adaptar nuestro html de forma que sea dinamico
