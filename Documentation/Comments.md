@@ -51,3 +51,52 @@ y esto lo vamos  a referenciar en la vista que muestra un unico post:
     </section>    
 </x-layout>
 ```
+
+
+### Consistencia de tablas y restricciones de llaves foraneas
+
+vamos a usar un commando para crear la migracion el modelo el factory y el controller para los comentarios:
+
+php artisan make:model Comment -mfc
+
+y vamos a trabajar en la migracion para que refleje las relaciones que tiene, ademas de esto agregar las reglas para que cuendo sus padres sean eliminados este tambien:
+
+```php
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateCommentsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('comments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('post_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->text('body');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('comments');
+    }
+}
+
+
+```
