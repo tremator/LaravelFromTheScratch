@@ -196,48 +196,112 @@ y por ultimo adaptar nuestro html de forma que sea dinamico
 
 ### Diseñar el Formulario para los comentarios
 
-Vamos a crear el formulario el cual le permitira a los usuarios crear sus comentarios en un postÑ
+Vamos a crear el formulario el cual le permitira a los usuarios crear sus comentarios en un post:
 
 ```html
-    @foreach ($post->comments as $comment)
-        <x-post_comment :comment="$comment"></x-post_comment>
-    @endforeach
+     <form method="POST" action="/posts/{{$post->slug}}/comments" class="border border-gray-200 rounded-xl p-6" style="width: 30%">
+            @csrf
+
+            <header class="flex items-center">
+                <img src="https://i.pravatar.cc/40?u={{auth()->id()}}" alt="" width="60" height="60" class="rounded-full mr-3">
+                <h2>
+                    Want to Participate??
+                </h2>
+            </header>
+
+            <div class="mt-6">
+                <textarea name="body" rows="5" class="w-full text-sm focus:outline-none focus:ring" placeholder="Text Something"></textarea>
+            </div>
+
+            <div class="flex justify-end mt-6 border-t border-fray-300 pt-6">
+
+                <button type="submit" class="bg-blue-500 text-white uppercase font-semibold text-xs py-2 px-10 rounded-2xl hover:bg-blue-600">
+                    Post
+                </button>
+
+            </div>
+
+        </form>
 ```
 
-con eso vamos a mostrar el componente por cada comentario que tenga un post en especifico, lo siguiente es hacer dicho componente:
+
+### Activar el formulario de comentarios
+
+Para esto vamos a crear un nuevo controller llamado PostCommentController y en ese controller crearemos el metodo para guardar los commentarios, 
+relacionandolos con su post y usuario respectivos:
+
+```php
+
+namespace App\Http\Controllers;
+
+use App\Models\Post;
+use Illuminate\Http\Request;
+
+class PostCommentController extends Controller
+{
+    public function store(Post $post){
+
+
+        request()->validate([
+            'body' => 'required'
+        ]);
+
+        $post->comments()->create([
+            'user_id' => auth()->id(),
+            'body' => request('body')
+        ]);
+
+        return back();
+
+    }
+}
+
+```
+
+tambien deberemos agregar la propiedad guarded y ponerla vacia en el modelo, para que nos permita guardar los datos en la base datos, depues hay que hacer la ruta:
+
+```php
+
+Route::post('posts/{post:slug}/comments',[PostCommentController::class,'store']);
+
+```
+
+y modificar el formulario para que responda a esta ruta, ademas de agregar una validacion para que solo los usuarios logeados, puedan hacer comentarios:
+
 
 ```html
 
-@props(['comment'])
+ @auth
+        <form method="POST" action="/posts/{{$post->slug}}/comments" class="border border-gray-200 rounded-xl p-6" style="width: 30%">
+            @csrf
 
-<article class= "flex bg-gray-100 p-6 border border-gray-200 rounded-xl space-x-4" >
+            <header class="flex items-center">
+                <img src="https://i.pravatar.cc/40?u={{auth()->id()}}" alt="" width="60" height="60" class="rounded-full mr-3">
+                <h2>
+                    Want to Participate??
+                </h2>
+            </header>
 
-    <div class="flex-shrink-0">
+            <div class="mt-6">
+                <textarea name="body" rows="5" class="w-full text-sm focus:outline-none focus:ring" placeholder="Text Something"></textarea>
+            </div>
 
-        <img src="https://i.pravatar.cc/60?u={{$comment->id}}" alt="" width="60" height="60" class="rounded-xl">
-        
+            <div class="flex justify-end mt-6 border-t border-fray-300 pt-6">
 
-    </div>
-    <header class="mb-4">
-        <h3 class="font-bold mr-3">
-            {{$comment->author->username}}
-        </h3>
+                <button type="submit" class="bg-blue-500 text-white uppercase font-semibold text-xs py-2 px-10 rounded-2xl hover:bg-blue-600">
+                    Post
+                </button>
 
-        <p class="text-xs ml-3" > Posted <time> {{ $comment->created_at }}</time> </p>    
-        
-    </header>
+            </div>
 
+        </form>
+            
+        @else
         <p>
-            {{$comment->body}}
+            <a href="/login">Log in to leave a comment</a>
         </p>
-           
-    <div>
+        @endauth
 
 
-
-    </div>
-
-</article>    
 
 ```
-

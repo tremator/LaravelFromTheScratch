@@ -13,7 +13,7 @@
             {{$comment->author->username}}
         </h3>
 
-        <p class="text-xs ml-3" > Posted <time> {{ $comment->created_at }}</time> </p>    
+        <p class="text-xs ml-3" > Posted <time> {{ $comment->created_at->format('F j, Y, g:i a') }}</time> </p>    
         
     </header>
 
