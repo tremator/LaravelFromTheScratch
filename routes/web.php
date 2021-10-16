@@ -31,3 +31,23 @@ Route::post('register', [RegisterController::class, 'store'])->middleware('guest
 Route::post('logout', [SessionController::class, 'destroy'])->middleware('auth');
 Route::get('/login', [SessionController::class, 'create'])->middleware('guest');
 Route::post('login', [SessionController::class, 'store'])->middleware('guest');
+
+
+Route::get('ping', function () {
+
+    $mailchimp = new \MailchimpMarketing\ApiClient();
+
+    $mailchimp->setConfig([
+        'apiKey' => config('services.mailchimp.key'),
+        'server' => 'us5'
+    ]);
+
+
+    
+
+    $response = $mailchimp->lists->addListMember('2d6341977a',[
+        'email_address' => 'dsolisa@est.utn.ac.cr',
+        'status' => 'subscribed'
+    ]);
+    ddd($response);
+});
