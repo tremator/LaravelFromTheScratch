@@ -33,6 +33,36 @@ Route::get('/login', [SessionController::class, 'create'])->middleware('guest');
 Route::post('login', [SessionController::class, 'store'])->middleware('guest');
 
 
+Route::post('newsletter', function () {
+
+    request()->validate([
+        'email'
+    ]);
+
+    $mailchimp = new \MailchimpMarketing\ApiClient();
+
+    $mailchimp->setConfig([
+        'apiKey' => config('services.mailchimp.key'),
+        'server' => 'us5'
+    ]);
+
+
+    
+    try {
+        $response = $mailchimp->lists->addListMember('2d6341977a',[
+            'email_address' => request('email'),
+            'status' => 'subscribed'
+        ]);
+        return redirect('/')->with('success','You are now signed up for our news letter');
+    } catch (\Exception $th) {
+        return redirect('/')->with('success','Something went wrong');
+    }
+    
+    
+    
+});
+
+
 Route::get('ping', function () {
 
     $mailchimp = new \MailchimpMarketing\ApiClient();
@@ -45,9 +75,6 @@ Route::get('ping', function () {
 
     
 
-    $response = $mailchimp->lists->addListMember('2d6341977a',[
-        'email_address' => 'dsolisa@est.utn.ac.cr',
-        'status' => 'subscribed'
-    ]);
+    $response = $mailchimp->ping->get();
     ddd($response);
 });
