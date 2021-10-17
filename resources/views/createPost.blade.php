@@ -2,14 +2,18 @@
 
     <section class="px-6 py-8">
         <div class="border border-gray-200 rounded-xl p-6 max-w-sm mx-auto">
-        <form action="/admin/posts" method="POST" >
+
+            <h1 class="text-lg font-bold mb-4">
+                publish new post
+            </h1>
+        <form action="/admin/posts" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div>
                 <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="title">Title</label>
                 <input class="border border-gray-400 p-2 w-full" type="text" name="title" id="title" required value="{{old('title')}}">
 
-                @error('tittle')
+                @error('title')
                     <p class="text-red-500 text-xs mt-1">{{$message}}</p>
                 @enderror
             </div>
@@ -21,6 +25,16 @@
                     <p class="text-red-500 text-xs mt-1">{{$message}}</p>
                 @enderror
             </div>
+
+            <div>
+                <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="thumpnail">Thumbnail</label>
+                <input class="border border-gray-400 p-2 w-full" type="file" name="thumpnail" id="thumpnail" required value="{{old('thumbnail')}}">
+
+                @error('thumbnail')
+                    <p class="text-red-500 text-xs mt-1">{{$message}}</p>
+                @enderror
+            </div>
+
             <div>
                 <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="excerpt">Excerpt</label>
                 <input class="border border-gray-400 p-2 w-full" type="text" name="excerpt" id="excerpt" required value="{{old('excerpt')}}">
@@ -54,7 +68,7 @@
 
                 </select>
 
-                @error('category')
+                @error('category_id')
                     <p class="text-red-500 text-xs mt-1">{{$message}}</p>
                 @enderror
             </div>
