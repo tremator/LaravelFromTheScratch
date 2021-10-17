@@ -38,19 +38,4 @@ Route::post('login', [SessionController::class, 'store'])->middleware('guest');
 
 Route::post('newsletter', NewsletterController::class);
 
-
-Route::get('ping', function () {
-
-    $mailchimp = new \MailchimpMarketing\ApiClient();
-
-    $mailchimp->setConfig([
-        'apiKey' => config('services.mailchimp.key'),
-        'server' => 'us5'
-    ]);
-
-
-    
-
-    $response = $mailchimp->ping->get();
-    ddd($response);
-});
+Route::get('admin/posts/create',[PostController::class,'create'])->middleware('admin');
