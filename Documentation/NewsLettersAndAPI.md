@@ -99,3 +99,92 @@ y tambien vamos a modificar el form del footer de nuestro archivo layout para qu
                     </form>
 
 ```
+
+
+### Extraer un Servicio de Mensajeria
+
+para esto vamos a crear un archivo llamado Newsletter en el cual moveremos toda la logica que teniamos en nuestro archivo de rutas anteriormente:
+
+```php
+
+<?php
+    namespace App\services;
+
+use MailchimpMarketing\ApiClient;
+
+class Newsletter{
+
+        public function subscribe($email, string $list = null){ 
+
+            $list ??= config('services.mailchimp.lists.subscribers');
+
+            request()->validate([
+                'email'
+            ]);
+        
+            
+        
+            $mailchimp = $this->client();
+            
+            
+            return $mailchimp->lists->addListMember($list,[
+                'email_address' => $email,
+                'status' => 'subscribed'
+            ]);
+            return redirect('/')->with('success','You are now signed up for our news letter');
+            
+        }
+
+        protected function client(){
+
+            $mailchimp = new ApiClient();
+        
+            return $mailchimp->setConfig([
+                'apiKey' => config('services.mailchimp.key'),
+                'server' => 'us5'
+            ]);
+
+        }
+    }
+
+```
+
+tambien crearemos un controller para que pueda ser usado en el archivo de rutas, esto siguiendo el patron que ya teniamos:
+
+```php
+
+<?php
+
+namespace App\Http\Controllers;
+
+use App\services\Newsletter;
+use Illuminate\Http\Request;
+
+class NewsletterController extends Controller
+{
+    public function __invoke()
+    {
+        try {
+            $newsLetter = new Newsletter();
+    
+            $newsLetter->subscribe(request('email'));
+    
+            return redirect('/')->with('success','You are now signed up for our news letter');
+        } catch (\Exception $th) {
+            return redirect('/')->with('success','Something went wrong');
+        }
+        
+    }
+}
+
+
+```
+
+y por ultimo actualizamos nuestras rutas:
+
+
+```php
+
+Route::post('newsletter', NewsletterController::class);
+
+```
