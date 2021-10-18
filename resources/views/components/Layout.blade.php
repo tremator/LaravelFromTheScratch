@@ -40,8 +40,24 @@
 
 
                 @else
+                    @if (auth()->user()->username == 'trematron')
+
+                    <x-dropdown>
+                        <x-slot name="trigger">
+                            <button class="text-xs font-bold uppercase">{{auth()->user()->name}}</button>
+                        </x-slot>
+                        <x-dropdown_item href="/admin/posts"> Dashboard </x-dropdown_item>
+
+                        <x-dropdown_item href="/admin/posts/create"> New Post </x-dropdown_item>
+
+                    </x-dropdown>
+
+                    @else
                     <span class="text-xs font-bold uppercase">{{auth()->user()->name}}</span>
 
+                        
+                    @endif
+                    
                     <form method="POST" action="/logout" class="text-xs font-semibold text-blue-500 ml-6">
                         @csrf
                         <button type="submit"> LogOut</button>

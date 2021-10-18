@@ -150,4 +150,72 @@ public function store(){
 
 ```
 
+### Crear un form y una pagina para editar y eliminar posts
+
+Para esto primero vamos a crear las rutas que van a responder a estas acciones:
+
+```php
+Route::get('admin/posts/{post}/edit',[AdminPostController::class,'edit'])->middleware('admin');
+Route::patch('admin/posts/{post}',[AdminPostController::class,'update'])->middleware('admin');
+Route::delete('admin/posts/{post}',[AdminPostController::class,'destroy'])->middleware('admin');
+```
+despues crearemos el controller para estas acciones:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Post;
+use Illuminate\Http\Request;
+
+class AdminPostController extends Controller
+{
+    public function index(){
+        return view('adminPosts',[
+            'posts' => Post::paginate(50)
+        ]);
+    }
+
+
+    public function edit(Post $post){
+        return view('adminPostEdit',['post' => $post]);
+    }
+
+    public function update(Post $post){
+        
+        
+        $attributes = request()->validate([
+            'title' => 'required',
+            'slug' => ['required'],
+            'thumpnail' => 'required',
+            'excerpt' => 'required',
+            'body' => 'required',
+            'category_id' => ['required']
+        ]);
+
+        if (isset($attributes['thumpnail'])) {
+            $attributes['thumpnail'] = request()->file('thumpnail')->store('thupnails');
+        }
+
+        $post->update($attributes);
+
+        return back()->with('success','Post updated');
+
+    }
+
+    public function destroy(Post $post){
+        $post->delete();
+
+        return back();
+    }
+
+}
+
+
+```
+
+y por ultimo las vistas, en las cuales una mostrara todos los posts en una lista y proveera las opciones para editar y eliminar, elimiar se ejecutara inmediatamente con un form, 
+mientras que editar lo llevara a una pagina igual a la de crear pero ya tendra datos cargados
+
 

@@ -4,7 +4,7 @@
         <div class="border border-gray-200 rounded-xl p-6 max-w-4xl mx-auto">
 
             <h1 class="text-lg font-bold mb-4">
-                publish new post
+                <p>{{'Edit Post: ' . $post->title}}</p>  
             </h1>
 
             <div class="flex">
@@ -27,14 +27,17 @@
             </div>
 
             <main class="flex-1">
-                <form action="/admin/posts" method="POST" enctype="multipart/form-data">
+                <form action="/admin/posts/{{$post->id}}" method="POST" enctype="multipart/form-data">
                     @csrf
 
+                    @method('PATCH')
+
                     <div>
+
                         <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5"
                             for="title">Title</label>
                         <input class="border border-gray-400 p-2 w-full" type="text" name="title" id="title" required
-                            value="{{ old('title') }}">
+                            value="{{  old('title', $post->title)}}">
 
                         @error('title')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -43,7 +46,7 @@
                     <div>
                         <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="slug">Slug</label>
                         <input class="border border-gray-400 p-2 w-full" type="text" name="slug" id="slug" required
-                            value="{{ old('slug') }}">
+                            value="{{ old('slug',$post->slug) }}">
 
                         @error('slug')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -54,7 +57,7 @@
                         <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5"
                             for="thumpnail">Thumbnail</label>
                         <input class="border border-gray-400 p-2 w-full" type="file" name="thumpnail" id="thumpnail"
-                            required value="{{ old('thumbnail') }}">
+                             value="{{ old('thumpnail', $post->thumpnail) }}">
 
                         @error('thumbnail')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -65,7 +68,7 @@
                         <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5"
                             for="excerpt">Excerpt</label>
                         <input class="border border-gray-400 p-2 w-full" type="text" name="excerpt" id="excerpt"
-                            required value="{{ old('excerpt') }}">
+                            required value="{{ old('excerpt', $post->excerpt) }}">
 
                         @error('excerpt')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -74,7 +77,9 @@
                     <div>
                         <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5" for="body">Body</label>
                         <textarea class="border border-gray-400 p-2 w-full" name="body" id="body" required
-                            value="{{ old('body') }}">
+                        >
+
+                            {{old('body',$post->body)}}
                     </textarea>
 
                         @error('body')
@@ -85,7 +90,7 @@
                         <label class="block mb-2 uppercase font-bold text-xs text-gray-700 mt-5"
                             for="category_id">category</label>
                         <select class="border border-gray-400 p-2 w-full" name="category_id" id="category_id" required
-                            value="{{ old('category_id') }}">
+                            value="{{ old('category_id', $post->category_id) }}">
 
                             @php
                                 $categories = \App\Models\Category::all();
