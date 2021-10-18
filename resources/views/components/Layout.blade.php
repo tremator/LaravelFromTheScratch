@@ -40,7 +40,9 @@
 
 
                 @else
-                    @if (auth()->user()->username == 'trematron')
+                    @can('admin')
+                        
+                    
 
                     <x-dropdown>
                         <x-slot name="trigger">
@@ -56,7 +58,7 @@
                     <span class="text-xs font-bold uppercase">{{auth()->user()->name}}</span>
 
                         
-                    @endif
+                    @endcan
                     
                     <form method="POST" action="/logout" class="text-xs font-semibold text-blue-500 ml-6">
                         @csrf
